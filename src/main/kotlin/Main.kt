@@ -354,7 +354,7 @@ fun crudPatrocinadores() {
                 if (patroExistente != null) {
                     do {
                         println("")
-                        menuMostar(listOf("Nombre", "Fecha de nacimiento", "Posición", "ID Equipo","Salir"))
+                        menuMostar(listOf("Nombre", "Sector","Salir"))
                         println("\nSeleccion a una opción:")
                         val opcionUpdate = readln()
                         when(opcionUpdate) {
@@ -380,7 +380,7 @@ fun crudPatrocinadores() {
             }
             "5" -> {
                 val id = leerEntero("Introduce el id:")
-                JugadorDAO.eliminarJugador(id)
+                PatrocinadorDAO.eliminarPatrocinador(id)
             }
             "6" -> {
                 println("Saliendo...\n")

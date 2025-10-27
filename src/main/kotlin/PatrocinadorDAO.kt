@@ -72,13 +72,27 @@ object PatrocinadorDAO {
             ).use { pstmt ->
                 pstmt.setString(1, patrocinador.nombre)
                 pstmt.setString(2, patrocinador.sector)
-                pstmt.setInt(5, patrocinador.id_patrocinador)
+                pstmt.setInt(3, patrocinador.id_patrocinador)
 
                 val filas = pstmt.executeUpdate()
                 if (filas > 0) {
                     println("\npatrocinador con id=${patrocinador.id_patrocinador} actualizado con éxito.\n")
                 } else {
                     println("\nNo se encontró ningun patrocinador con id=${patrocinador.id_patrocinador}.")
+                }
+            }
+        } ?: println("\nNo se pudo establecer la conexión.\n")
+    }
+
+    fun eliminarPatrocinador(id: Int) {
+        conectarBD()?.use { conn ->
+            conn.prepareStatement("DELETE FROM patrocinador WHERE id = ?").use { pstmt ->
+                pstmt.setInt(1, id)
+                val filas = pstmt.executeUpdate()
+                if (filas > 0) {
+                    println("\nPatrocinador con id=$id eliminado correctamente.\n")
+                } else {
+                    println("\nNo se encontró ningun patrocinador con id=$id.\n")
                 }
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
