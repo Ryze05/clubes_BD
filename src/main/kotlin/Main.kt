@@ -1,5 +1,6 @@
 package org.example
 
+import org.example.PatrocinadorDAO.transaccionPatroCLub
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
@@ -31,7 +32,7 @@ fun conectarBD(): Connection? {
 
 fun main() {
     do {
-        menuMostar(listOf("Ligas", "Clubes", "Jugadores", "Patrocinadores","Salir"))
+        menuMostar(listOf("Ligas", "Clubes", "Jugadores", "Patrocinadores", "Añadir patrocinador a clubes (transaccion)","Salir"))
         println("\nSelecciona una opción:")
         val opcion1 = readln()!!
         println("")
@@ -41,11 +42,16 @@ fun main() {
             "2" -> crudClubes()
             "3" -> crudJugadores()
             "4" -> crudPatrocinadores()
-            "5" -> println("Saliendo del programa...")
+            "5" -> {
+                val idEquipo = leerEntero("Introduce el id del equipo")
+                val idPatro = leerEntero("Introducce el id del patrocinador")
+                transaccionPatroCLub(idEquipo, idPatro)
+            }
+            "6" -> println("Saliendo del programa...")
             else -> println("Opción no válida\n")
         }
 
-    } while (opcion1 != "5")
+    } while (opcion1 != "6")
 }
 
 fun menuMostar(options: List<String>) {

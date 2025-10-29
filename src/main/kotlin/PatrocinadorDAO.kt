@@ -97,4 +97,53 @@ object PatrocinadorDAO {
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
+
+    fun transaccionPatroCLub(id_equipo: Int, id_patro: Int) {
+        val conn = conectarBD()
+
+        if (conn == null) {
+            println("\nNo se pudo establecer la conexión.\n")
+            return
+        }
+
+        try {
+            conn.autoCommit = false
+
+            conn.prepareStatement(
+                "INSERT INTO equipo_patrocinador(id_equipo, id_patrocinador) VALUES (?, ?)"
+            ).use { pstmt ->
+                pstmt.setInt(1, id_equipo)
+                pstmt.setInt(2, id_patro)
+                pstmt.executeUpdate()
+                println("\nSe ha añadido correctamente el patrocinador al equipo.\n")
+            }
+
+            conn.prepareStatement(
+                "UPDATE equipo SET cantidad_patrocinadores = cantidad_patrocinadores + 1 WHERE id_equipo = ?"
+            ).use { pstmt ->
+                pstmt.setInt(1, id_equipo)
+                val filas = pstmt.executeUpdate()
+
+                if (filas > 0) {
+                    println("\nSe ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
+                } else {
+                    println("\nNo se ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
+                }
+            }
+
+            conn.commit()
+            println("Transacción realizada con éxito.")
+
+        } catch (e: Exception) {
+            conn.rollback()
+            println("Error en la transacción.")
+            e.printStackTrace()
+
+        } finally {
+            conn.close()
+        }
+    }
+
+
+
 }
