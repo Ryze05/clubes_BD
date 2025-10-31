@@ -115,7 +115,7 @@ object PatrocinadorDAO {
                 pstmt.setInt(1, id_equipo)
                 pstmt.setInt(2, id_patro)
                 pstmt.executeUpdate()
-                println("\nSe ha añadido correctamente el patrocinador al equipo.\n")
+                //println("\nSe ha añadido correctamente el patrocinador al equipo.\n")
             }
 
             conn.prepareStatement(
@@ -124,20 +124,20 @@ object PatrocinadorDAO {
                 pstmt.setInt(1, id_equipo)
                 val filas = pstmt.executeUpdate()
 
-                if (filas > 0) {
+                /*if (filas > 0) {
                     println("\nSe ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
                 } else {
                     println("\nNo se ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
-                }
+                }*/
             }
 
             conn.commit()
-            println("Transacción realizada con éxito.")
+            println("\nTransacción realizada con éxito.\n")
 
         } catch (e: Exception) {
             conn.rollback()
-            println("Error en la transacción.")
-            e.printStackTrace()
+            println("\nError en la transacción.\n")
+            //e.printStackTrace()
 
         } finally {
             conn.close()

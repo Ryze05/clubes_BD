@@ -89,9 +89,9 @@ object EquipoDAO {
                 pstmt.setInt(6, equipo.id_equipo)
                 val filas = pstmt.executeUpdate()
                 if (filas > 0) {
-                    println("\nEquipo con id=${equipo.id_equipo} actualizado con éxito.\n")
+                    println("\nEquipo con id=${equipo.id_equipo} actualizado con éxito.")
                 } else {
-                    println("\nNo se encontró ningun equipo con id=${equipo.id_equipo}.\n")
+                    println("\nNo se encontró ningun equipo con id=${equipo.id_equipo}.")
                 }
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")

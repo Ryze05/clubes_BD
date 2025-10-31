@@ -6,24 +6,17 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-/*fun main() {
-    val dbPath = "datos/clubes.sqlite"
-    val dbFile = File(dbPath)
-    println("Ruta de la BD: ${dbFile.absolutePath}")
-    val url = "jdbc:sqlite:${dbFile.absolutePath}"
-
-    DriverManager.getConnection(url).use { conn ->
-        println("Conexión establecida correctamente con SQLite.")
-    }
-}*/
-
 val dbPath = "src/main/resources/clubes.sqlite"
 val dbFile = File(dbPath)
 val url = "jdbc:sqlite:${dbFile.absolutePath}"
 
 fun conectarBD(): Connection? {
     return try {
-        DriverManager.getConnection(url)
+        val conn = DriverManager.getConnection(url)
+        conn.createStatement().use { stmt ->
+            stmt.execute("PRAGMA foreign_keys = ON;")
+        }
+        conn
     } catch (e: SQLException) {
         e.printStackTrace()
         null
@@ -342,7 +335,7 @@ fun crudPatrocinadores() {
                 val id = leerEntero("Introduce el id:")
                 val patrocinador = PatrocinadorDAO.consultarPatrocinadorPorId(id)
                 if (patrocinador != null) {
-                    println("\n${patrocinador.id_patrocinador} - ${patrocinador.nombre} - Sector: ${patrocinador.sector}")
+                    println("\n${patrocinador.id_patrocinador} - ${patrocinador.nombre} - Sector: ${patrocinador.sector}\n")
                 } else {
                     println("\nPatrocinador no encontrado\n")
                 }
