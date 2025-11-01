@@ -36,7 +36,14 @@ fun main() {
             "3" -> crudJugadores()
             "4" -> crudPatrocinadores()
             "5" -> {
+                EquipoDAO.listarEquipos().forEachIndexed { index, equipo ->
+                    println("${index+1}. ${equipo.nombre} - ID Equipo: ${equipo.id_equipo}")
+                }
                 val idEquipo = leerEntero("Introduce el id del equipo")
+                println("")
+                PatrocinadorDAO.listarPatrocinadores().forEachIndexed { index, patrocinador ->
+                    println("${index+1}. ${patrocinador.nombre} - ID Patrocinador: ${patrocinador.id_patrocinador}")
+                }
                 val idPatro = leerEntero("Introducce el id del patrocinador")
                 transaccionPatroCLub(idEquipo, idPatro)
             }
@@ -64,7 +71,7 @@ fun crudClubes() {
             "1" -> {
                 EquipoDAO.listarEquipos().stream()
                     .forEach {
-                        println("${it.id_equipo} - ${it.nombre} (${it.año_fundacion}) - Títulos: ${it.titulos} - Facturación: ${it.facturacion}€ - ID Liga: ${it.id_liga}")
+                        println("${it.id_equipo} - ${it.nombre} (${it.año_fundacion}) - Títulos: ${it.titulos} - Facturación: ${it.facturacion}€ - Cantidad patrocinadores: ${it.cantidad_patrocinadores} - ID Liga: ${it.id_liga}")
                     }
                 println("")
             }
@@ -72,7 +79,7 @@ fun crudClubes() {
                 val id = leerEntero("Introduce el id:")
                 val equipo = EquipoDAO.consultarEquipoPorId(id)
                 if (equipo != null) {
-                    println("\n${equipo.id_equipo} - ${equipo.nombre} (${equipo.año_fundacion}) - Títulos: ${equipo.titulos} - Facturación: ${equipo.facturacion}€ - ID Liga: ${equipo.id_liga}\n")
+                    println("\n${equipo.id_equipo} - ${equipo.nombre} (${equipo.año_fundacion}) - Títulos: ${equipo.titulos} - Facturación: ${equipo.facturacion}€ - Cantidad patrocinadores: ${equipo.cantidad_patrocinadores} - ID Liga: ${equipo.id_liga}\n")
                 } else {
                     println("Equipo no encontrado\n")
                 }
@@ -82,6 +89,9 @@ fun crudClubes() {
                 val fundacion = leerEntero("Introduce el año de fundación:")
                 val titulos = leerEntero("Introduce la cantidad de títulos:")
                 val facturacion = leerDouble("Introduce la facturación:")
+                LigaDAO.listarLigas().forEachIndexed { index, liga ->
+                    println("${index+1}. ${liga.nombre} - ID Liga: ${liga.id_liga}")
+                }
                 val idLiga = leerEntero("Introduce el ID de la liga:")
                 val equipo = Equipo(null,nombre,fundacion,titulos, facturacion, idLiga)
                 EquipoDAO.insertarEquipo(equipo)
@@ -116,6 +126,9 @@ fun crudClubes() {
                                 EquipoDAO.actualizarEquipo(equipoCopia)
                             }
                             "5" -> {
+                                LigaDAO.listarLigas().forEachIndexed { index, liga ->
+                                    println("${index+1}. ${liga.nombre} - ID Liga: ${liga.id_liga}")
+                                }
                                 val idLIga = leerEntero("Introduce el nuevo ID de liga")
                                 val equipoCopia = equipoExistente.copy(id_liga = idLIga)
                                 EquipoDAO.actualizarEquipo(equipoCopia)
@@ -257,6 +270,9 @@ fun crudJugadores() {
                 val nombre = leerCadena("Introduce el nombre:")
                 val nacimiento = leerCadena("Introduce la fecha de nacimiento (YYYY-MM-DD):")
                 val posicion = leerCadena("Introduce la posición del jugador:")
+                EquipoDAO.listarEquipos().forEachIndexed { index, equipo ->
+                    println("${index+1}. ${equipo.nombre} - ID Equipo: ${equipo.id_equipo}.")
+                }
                 val idEquipo = leerEntero("Introduce el ID del equipo del jugador:")
 
                 val jugador = Jugador(null,nombre,nacimiento, posicion, idEquipo)
@@ -288,6 +304,9 @@ fun crudJugadores() {
                                 JugadorDAO.actualizarJugador(jugadorCopia)
                             }
                             "4" -> {
+                                EquipoDAO.listarEquipos().forEachIndexed { index, equipo ->
+                                    println("${index+1}. ${equipo.nombre} - ID Equipo: ${equipo.id_equipo}.")
+                                }
                                 val idEquipo = leerEntero("Introduce un nuevo ID de equipo para el jugador:")
                                 val jugadorCopia = jugadorExistente.copy(id_equipo = idEquipo)
                                 JugadorDAO.actualizarJugador(jugadorCopia)

@@ -53,18 +53,21 @@ object JugadorDAO {
     }
 
     fun insertarJugador(jugador: Jugador) {
-
         conectarBD()?.use { conn ->
-            conn.prepareStatement(
-                "INSERT INTO jugador(nombre, fecha_nacimiento, posicion, id_equipo) VALUES (?, ?, ?, ?)"
-            ).use { pstmt ->
-                pstmt.setString(1, jugador.nombre)
-                pstmt.setString(2, jugador.fecha_nacimiento)
-                pstmt.setString(3, jugador.posicion)
-                pstmt.setInt(4, jugador.id_equipo)
+            try {
+                conn.prepareStatement(
+                    "INSERT INTO jugador(nombre, fecha_nacimiento, posicion, id_equipo) VALUES (?, ?, ?, ?)"
+                ).use { pstmt ->
+                    pstmt.setString(1, jugador.nombre)
+                    pstmt.setString(2, jugador.fecha_nacimiento)
+                    pstmt.setString(3, jugador.posicion)
+                    pstmt.setInt(4, jugador.id_equipo)
 
-                pstmt.executeUpdate()
-                println("\nJugador '${jugador.nombre}' insertado con éxito.\n")
+                    pstmt.executeUpdate()
+                    println("\nJugador '${jugador.nombre}' insertado con éxito.\n")
+                }
+            } catch (e: Exception) {
+                println("\nFallo al insertar el jugador. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
@@ -75,35 +78,43 @@ object JugadorDAO {
             return
         }
         conectarBD()?.use { conn ->
-            conn.prepareStatement(
-                "UPDATE jugador SET nombre = ?, fecha_nacimiento = ?, posicion = ?, id_equipo = ? WHERE id_jugador = ?"
-            ).use { pstmt ->
-                pstmt.setString(1, jugador.nombre)
-                pstmt.setString(2, jugador.fecha_nacimiento)
-                pstmt.setString(3, jugador.posicion)
-                pstmt.setInt(4, jugador.id_equipo)
-                pstmt.setInt(5, jugador.id_jugador)
+            try {
+                conn.prepareStatement(
+                    "UPDATE jugador SET nombre = ?, fecha_nacimiento = ?, posicion = ?, id_equipo = ? WHERE id_jugador = ?"
+                ).use { pstmt ->
+                    pstmt.setString(1, jugador.nombre)
+                    pstmt.setString(2, jugador.fecha_nacimiento)
+                    pstmt.setString(3, jugador.posicion)
+                    pstmt.setInt(4, jugador.id_equipo)
+                    pstmt.setInt(5, jugador.id_jugador)
 
-                val filas = pstmt.executeUpdate()
-                if (filas > 0) {
-                    println("\nJugador con id=${jugador.id_jugador} actualizado con éxito.\n")
-                } else {
-                    println("\nNo se encontró ningun jugador con id=${jugador.id_jugador}.")
+                    val filas = pstmt.executeUpdate()
+                    if (filas > 0) {
+                        println("\nJugador con id=${jugador.id_jugador} actualizado con éxito.\n")
+                    } else {
+                        println("\nNo se encontró ningun jugador con id=${jugador.id_jugador}.")
+                    }
                 }
+            } catch (e: Exception) {
+                println("\nFallo al actualizar el jugador. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
 
     fun eliminarJugador(id: Int) {
         conectarBD()?.use { conn ->
-            conn.prepareStatement("DELETE FROM jugador WHERE id_jugador = ?").use { pstmt ->
-                pstmt.setInt(1, id)
-                val filas = pstmt.executeUpdate()
-                if (filas > 0) {
-                    println("\nJugador con id=$id eliminado correctamente.\n")
-                } else {
-                    println("\nNo se encontró ningun jugador con id=$id.\n")
+            try {
+                conn.prepareStatement("DELETE FROM jugador WHERE id_jugador = ?").use { pstmt ->
+                    pstmt.setInt(1, id)
+                    val filas = pstmt.executeUpdate()
+                    if (filas > 0) {
+                        println("\nJugador con id=$id eliminado correctamente.\n")
+                    } else {
+                        println("\nNo se encontró ningun jugador con id=$id.\n")
+                    }
                 }
+            } catch (e: Exception) {
+                println("\nFallo al eliminar el jugador. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }

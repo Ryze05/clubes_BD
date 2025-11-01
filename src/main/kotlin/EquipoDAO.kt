@@ -6,7 +6,8 @@ data class Equipo(
     val año_fundacion: Int,
     val titulos: Int,
     val facturacion: Double,
-    val id_liga: Int
+    val id_liga: Int,
+    val cantidad_patrocinadores: Int? = 0
 )
 
 object EquipoDAO {
@@ -23,7 +24,8 @@ object EquipoDAO {
                                 año_fundacion = rs.getInt("fundacion"),
                                 titulos = rs.getInt("titulos"),
                                 facturacion = rs.getDouble("facturacion"),
-                                id_liga = rs.getInt("id_liga")
+                                id_liga = rs.getInt("id_liga"),
+                                cantidad_patrocinadores = rs.getInt("cantidad_patrocinadores")
                             )
                         )
                     }
@@ -47,7 +49,8 @@ object EquipoDAO {
                             año_fundacion = rs.getInt("fundacion"),
                             titulos = rs.getInt("titulos"),
                             facturacion = rs.getDouble("facturacion"),
-                            id_liga = rs.getInt("id_liga")
+                            id_liga = rs.getInt("id_liga"),
+                            cantidad_patrocinadores = rs.getInt("cantidad_patrocinadores")
                         )
                     }
                 }
@@ -71,7 +74,7 @@ object EquipoDAO {
                     println("\nEquipo '${equipo.nombre}' insertado con éxito.\n")
                 }
             } catch (e: Exception) {
-                println("\nError al insertar el equipo\n")
+                println("\nError al insertar el equipo. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
@@ -101,7 +104,7 @@ object EquipoDAO {
                     }
                 }
             } catch (e: Exception) {
-                println("\nFallo al actualizar el equipo.\n")
+                println("\nFallo al actualizar el equipo. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
@@ -119,7 +122,7 @@ object EquipoDAO {
                     }
                 }
             } catch (e: Exception) {
-                println("\nFallo al borrar el equipo.\n")
+                println("\nFallo al borrar el equipo. ${e.message}\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }

@@ -47,7 +47,6 @@ object PatrocinadorDAO {
     }
 
     fun insertarPatrocinador(patrocinador: Patrocinador) {
-
         conectarBD()?.use { conn ->
             conn.prepareStatement(
                 "INSERT INTO patrocinador(nombre, sector) VALUES (?, ?)"
@@ -86,64 +85,58 @@ object PatrocinadorDAO {
 
     fun eliminarPatrocinador(id: Int) {
         conectarBD()?.use { conn ->
-            conn.prepareStatement("DELETE FROM patrocinador WHERE id = ?").use { pstmt ->
-                pstmt.setInt(1, id)
-                val filas = pstmt.executeUpdate()
-                if (filas > 0) {
-                    println("\nPatrocinador con id=$id eliminado correctamente.\n")
-                } else {
-                    println("\nNo se encontró ningun patrocinador con id=$id.\n")
+            try {
+                conn.prepareStatement("DELETE FROM patrocinador WHERE id = ?").use { pstmt ->
+                    pstmt.setInt(1, id)
+                    val filas = pstmt.executeUpdate()
+                    if (filas > 0) {
+                        println("\nPatrocinador con id=$id eliminado correctamente.\n")
+                    } else {
+                        println("\nNo se encontró ningun patrocinador con id=$id.\n")
+                    }
                 }
+            } catch (e: Exception) {
+                println("\nError al eliminar un patrocinador. ${e.message}.\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
 
     fun transaccionPatroCLub(id_equipo: Int, id_patro: Int) {
-        val conn = conectarBD()
+        conectarBD()?.use { conn ->
+            try {
+                conn.autoCommit = false
 
-        if (conn == null) {
-            println("\nNo se pudo establecer la conexión.\n")
-            return
-        }
+                conn.prepareStatement(
+                    "INSERT INTO equipo_patrocinador(id_equipo, id_patrocinador) VALUES (?, ?)"
+                ).use { pstmt ->
+                    pstmt.setInt(1, id_equipo)
+                    pstmt.setInt(2, id_patro)
+                    pstmt.executeUpdate()
+                    //println("\nSe ha añadido correctamente el patrocinador al equipo.\n")
+                }
 
-        try {
-            conn.autoCommit = false
+                conn.prepareStatement(
+                    "UPDATE equipo SET cantidad_patrocinadores = cantidad_patrocinadores + 1 WHERE id_equipo = ?"
+                ).use { pstmt ->
+                    pstmt.setInt(1, id_equipo)
+                    val filas = pstmt.executeUpdate()
 
-            conn.prepareStatement(
-                "INSERT INTO equipo_patrocinador(id_equipo, id_patrocinador) VALUES (?, ?)"
-            ).use { pstmt ->
-                pstmt.setInt(1, id_equipo)
-                pstmt.setInt(2, id_patro)
-                pstmt.executeUpdate()
-                //println("\nSe ha añadido correctamente el patrocinador al equipo.\n")
+                    /*if (filas > 0) {
+                        println("\nSe ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
+                    } else {
+                        println("\nNo se ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
+                    }*/
+                }
+
+                conn.commit()
+                println("\nTransacción realizada con éxito.\n")
+
+            } catch (e: Exception) {
+                conn.rollback()
+                println("\nError en la transacción. ${e.message}\n")
             }
-
-            conn.prepareStatement(
-                "UPDATE equipo SET cantidad_patrocinadores = cantidad_patrocinadores + 1 WHERE id_equipo = ?"
-            ).use { pstmt ->
-                pstmt.setInt(1, id_equipo)
-                val filas = pstmt.executeUpdate()
-
-                /*if (filas > 0) {
-                    println("\nSe ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
-                } else {
-                    println("\nNo se ha actualizado la cantidad de patrocinadores del equipo con id=$id_equipo.\n")
-                }*/
-            }
-
-            conn.commit()
-            println("\nTransacción realizada con éxito.\n")
-
-        } catch (e: Exception) {
-            conn.rollback()
-            println("\nError en la transacción.\n")
-            //e.printStackTrace()
-
-        } finally {
-            conn.close()
-        }
+        } ?: println("\nNo se pudo establecer la conexión.\n")
     }
-
 
 
 }
