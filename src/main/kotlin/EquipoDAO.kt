@@ -29,6 +29,7 @@ object EquipoDAO {
                     }
                 }
             }
+
         } ?: println("\nNo se pudo establecer la conexión.\n")
         return lista
     }
@@ -56,18 +57,21 @@ object EquipoDAO {
     }
 
     fun insertarEquipo(equipo: Equipo) {
-
         conectarBD()?.use { conn ->
-            conn.prepareStatement(
-                "INSERT INTO equipo(nombre, fundacion, titulos, facturacion, id_liga) VALUES (?, ?, ?, ?, ?)"
-            ).use { pstmt ->
-                pstmt.setString(1, equipo.nombre)
-                pstmt.setInt(2, equipo.año_fundacion)
-                pstmt.setInt(3, equipo.titulos)
-                pstmt.setDouble(4, equipo.facturacion)
-                pstmt.setInt(5, equipo.id_liga)
-                pstmt.executeUpdate()
-                println("\nEquipo '${equipo.nombre}' insertado con éxito.\n")
+            try {
+                conn.prepareStatement(
+                    "INSERT INTO equipo(nombre, fundacion, titulos, facturacion, id_liga) VALUES (?, ?, ?, ?, ?)"
+                ).use { pstmt ->
+                    pstmt.setString(1, equipo.nombre)
+                    pstmt.setInt(2, equipo.año_fundacion)
+                    pstmt.setInt(3, equipo.titulos)
+                    pstmt.setDouble(4, equipo.facturacion)
+                    pstmt.setInt(5, equipo.id_liga)
+                    pstmt.executeUpdate()
+                    println("\nEquipo '${equipo.nombre}' insertado con éxito.\n")
+                }
+            } catch (e: Exception) {
+                println("\nError al insertar el equipo\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
@@ -77,38 +81,46 @@ object EquipoDAO {
             println("\nNo se puede actualizar un equipo sin id.\n")
             return
         }
+
         conectarBD()?.use { conn ->
-            conn.prepareStatement(
-                "UPDATE equipo SET nombre = ?, fundacion = ?, titulos = ?, facturacion = ?, id_liga = ? WHERE id_equipo = ?"
-            ).use { pstmt ->
-                pstmt.setString(1, equipo.nombre)
-                pstmt.setInt(2, equipo.año_fundacion)
-                pstmt.setInt(3, equipo.titulos)
-                pstmt.setDouble(4, equipo.facturacion)
-                pstmt.setInt(5, equipo.id_liga)
-                pstmt.setInt(6, equipo.id_equipo)
-                val filas = pstmt.executeUpdate()
-                if (filas > 0) {
-                    println("\nEquipo con id=${equipo.id_equipo} actualizado con éxito.")
-                } else {
-                    println("\nNo se encontró ningun equipo con id=${equipo.id_equipo}.")
+            try {
+                conn.prepareStatement(
+                    "UPDATE equipo SET nombre = ?, fundacion = ?, titulos = ?, facturacion = ?, id_liga = ? WHERE id_equipo = ?"
+                ).use { pstmt ->
+                    pstmt.setString(1, equipo.nombre)
+                    pstmt.setInt(2, equipo.año_fundacion)
+                    pstmt.setInt(3, equipo.titulos)
+                    pstmt.setDouble(4, equipo.facturacion)
+                    pstmt.setInt(5, equipo.id_liga)
+                    pstmt.setInt(6, equipo.id_equipo)
+                    val filas = pstmt.executeUpdate()
+                    if (filas > 0) {
+                        println("\nEquipo con id=${equipo.id_equipo} actualizado con éxito.\n")
+                    } else {
+                        println("\nNo se encontró ningun equipo con id=${equipo.id_equipo}.\n")
+                    }
                 }
+            } catch (e: Exception) {
+                println("\nFallo al actualizar el equipo.\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
 
     fun eliminarEquipo(id: Int) {
         conectarBD()?.use { conn ->
-            conn.prepareStatement("DELETE FROM equipo WHERE id_equipo = ?").use { pstmt ->
-                pstmt.setInt(1, id)
-                val filas = pstmt.executeUpdate()
-                if (filas > 0) {
-                    println("\nEquipo con id=$id eliminado correctamente.\n")
-                } else {
-                    println("\nNo se encontró ningun equipo con id=$id.\n")
+            try {
+                conn.prepareStatement("DELETE FROM equipo WHERE id_equipo = ?").use { pstmt ->
+                    pstmt.setInt(1, id)
+                    val filas = pstmt.executeUpdate()
+                    if (filas > 0) {
+                        println("\nEquipo con id=$id eliminado correctamente.\n")
+                    } else {
+                        println("\nNo se encontró ningun equipo con id=$id.\n")
+                    }
                 }
+            } catch (e: Exception) {
+                println("\nFallo al borrar el equipo.\n")
             }
         } ?: println("\nNo se pudo establecer la conexión.\n")
     }
-
 }

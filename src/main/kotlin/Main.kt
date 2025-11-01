@@ -91,7 +91,7 @@ fun crudClubes() {
                 val equipoExistente = EquipoDAO.consultarEquipoPorId(id)
                 if (equipoExistente != null) {
                     do {
-                        menuMostar(listOf("Nombre", "Año fundación", "Títulos", "Facturación", "Liga","Salir"))
+                        menuMostar(listOf("Nombre", "Año fundación", "Títulos", "Facturación", "ID liga","Salir"))
                         println("\nSelecciona una opción:")
                         val opcionUpdate = readln()
                         when(opcionUpdate) {
@@ -167,7 +167,7 @@ fun crudLigas() {
                 if (liga != null) {
                     println("\n${liga.id_liga} - ${liga.nombre} - País: ${liga.pais} - División: ${liga.division}\n")
                 } else {
-                    println("Equipo no encontrado\n")
+                    println("\nEquipo no encontrado\n")
                 }
             }
             "3" -> {
